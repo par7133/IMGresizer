@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+
+use Image::Resize;
+use File::Basename;
+
+if (! $ARGV[0]) {
+   print "\n\n";
+   print "Invalid argument[1], source file is required!";
+   print "\n";
+   exit 1;
+}
+
+if (! $ARGV[1]) {
+   print "\n\n";
+   print "Invalid argument[2], 'width' is required!";
+   print "\n";
+   exit 1;
+}
+
+if (! $ARGV[2]) {
+   print "\n\n";
+   print "Invalid argument[3], 'height' is required!";
+   print "\n";
+   exit 1;
+}
+
+my $sourceFile = $ARGV[0];
+
+print "Source file: \'", $sourceFile, "\'\n";
+
+if (! -f $sourceFile) {
+   print "\n\n";
+   print "Source file doesn't exist!";
+   print "\n";
+   exit 1;
+}
+
+my $destFile = $sourceFile;
+
+my @exts = qw (.jpeg .jpg .png .gif); 
+my ($name, $path, $ext) = fileparse($sourceFile, @exts);
+$ext = lc($ext);
+
+print "File type: \'", $ext, "\'\n";
+
+$Image = Image::Resize->new($sourceFile);
+
+if ($Image->width > $Image->height) {
+  $newWidth = $ARGV[1];
+  $newHeight = int($Image->height / ($Image->width() / $newWidth));
+} else {
+  $newHeight = $ARGV[2];
+  $newWidth = int($Image->width / ($Image->height() / $newHeight));
+}
+print "Resizing to ", $newWidth, "x",  $newHeight, "px\n";
+
+$gd = $Image->resize($newWidth, $newHeight);
+open(FH, '>' . $destFile);
+
+if ($ext eq ".jpg" || $ext eq ".jpeg") {
+  print "Writing jpeg output\n";
+  print FH $gd->jpeg();
+} elsif ($ext eq ".png") {
+  print "Writing png output\n";
+  print FH $gd->png(0);
+} elsif ($ext eq ".gif") {
+  print "Writing gif output\n";
+  print FH $gd->gif();
+}
+
+close(FH);
+
+exit 0;
