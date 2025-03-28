@@ -7,4 +7,4 @@ A (CGI/Perl) image resizer
 ##Note  
   IMGresizer works with png, jpg/jpeg, gif and more  
 
-Feedback: posta@elettronica.lol
+Feedback: <a href="mailto:code@gaox.io">code@gaox.io</a>
